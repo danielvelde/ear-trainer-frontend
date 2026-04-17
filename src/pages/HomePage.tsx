@@ -1,10 +1,8 @@
-import CounterComponent from "../components/CounterComponent.tsx";
+import {Route, Routes} from "react-router-dom";
 
 function HomePage() {
     return(
-        <CounterComponent />
-
     )
 }
 
-export default HomePage;0
+export default HomePage;
