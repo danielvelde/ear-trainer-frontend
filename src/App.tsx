@@ -4,7 +4,7 @@ import {SignupPage} from "./pages/SignupPage.tsx";
 import {LoginPage} from "./pages/LoginPage.tsx";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./components/Dashboard.tsx";
+import DashboardPage from "./pages/DashboardPage.tsx";
 
 function App() {
     return (
@@ -15,7 +15,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
-                        <Dashboard />
+                        <DashboardPage />
                     </ProtectedRoute>
                 } />
             </Routes>

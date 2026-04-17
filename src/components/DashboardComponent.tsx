@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 
-function Dashboard() {
+function DashboardComponent() {
     const { logout } = useAuth() as unknown as { logout: () => void };
 
     return (
@@ -20,4 +20,4 @@ function Dashboard() {
     );
 }
 
-export default Dashboard;
+export default DashboardComponent;
