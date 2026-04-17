@@ -13,9 +13,7 @@ function Dashboard() {
                 <h2>Welcome to your Dashboard</h2>
                 <p>Select an exercise to get started.</p>
                 <div>
-                    <button disabled>Interval Recognition</button>
-                    <button disabled>Chord Identification</button>
-                    <button disabled>Melody Dictation</button>
+                    <button disabled> Play</button>
                 </div>
             </main>
         </div>
