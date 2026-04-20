@@ -8,6 +8,22 @@ const NOTE_OCTAVES: Record<string, number[]> = {
     F: [3, 4], Fs: [3, 4], G: [3, 4], Gs: [3, 4], A: [3, 4], As: [3, 4], B: [3, 4],
 };
 
+const ALL_NOTES = Object.keys(NOTE_OCTAVES);
+
+function pickChoices(correct: string): string[] {
+    const distractors = ALL_NOTES.filter((n) => n !== correct);
+    for (let i = distractors.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
+    }
+    const four = [correct, ...distractors.slice(0, 3)];
+    for (let i = four.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [four[i], four[j]] = [four[j], four[i]];
+    }
+    return four;
+}
+
 async function playNote(rootNote: string) {
     const octaves = NOTE_OCTAVES[rootNote];
     if (!octaves) return;
@@ -30,8 +46,8 @@ function GameRequestComponent() {
     const [done, setDone] = useState(false);
 
     const options = useMemo(
-        () => (session ? [...new Set(session.sounds.map((s) => s.chordType))] : []),
-        [session]
+        () => (session ? pickChoices(session.sounds[currentIndex].rootNote) : []),
+        [session, currentIndex]
     );
 
     const handlePlay = useCallback(() => {
@@ -43,7 +59,7 @@ function GameRequestComponent() {
         (choice: string) => {
             if (selected || !session) return;
             setSelected(choice);
-            if (choice === session.sounds[currentIndex].chordType) setScore((s) => s + 1);
+            if (choice === session.sounds[currentIndex].rootNote) setScore((s) => s + 1);
         },
         [selected, session, currentIndex]
     );
@@ -79,8 +95,8 @@ function GameRequestComponent() {
             <button onClick={handlePlay}>Play</button>
             <div>
                 {options.map((opt) => {
-                    const isCorrect = selected && opt === current.chordType;
-                    const isWrong = selected && opt === selected && opt !== current.chordType;
+                    const isCorrect = selected && opt === current.rootNote;
+                    const isWrong = selected && opt === selected && opt !== current.rootNote;
                     return (
                         <button
                             key={opt}
