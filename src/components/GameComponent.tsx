@@ -1,11 +1,14 @@
-import {useState} from "react";
+import { GameRequestProvider } from "../context/GameRequestContext.tsx";
+import GameRequestComponent from "./GameRequestComponent.tsx";
 
 function GameComponent() {
-    const [sounds, setSounds] = useState();
-
     return (
-
-    )
+        <div className="game">
+            <GameRequestProvider>
+                <GameRequestComponent />
+            </GameRequestProvider>
+        </div>
+    );
 }
 
 export default GameComponent;
