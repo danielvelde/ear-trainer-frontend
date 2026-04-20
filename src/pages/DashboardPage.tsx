@@ -1,8 +1,11 @@
 import DashboardComponent from "../components/DashboardComponent.tsx";
+import { GameRequestProvider } from "../context/GameRequestContext.tsx";
 
 function DashboardPage() {
     return (
-        <DashboardComponent />
+        <GameRequestProvider>
+            <DashboardComponent />
+        </GameRequestProvider>
     )
 }
 
