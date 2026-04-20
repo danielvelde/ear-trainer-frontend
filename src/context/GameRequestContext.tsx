@@ -35,7 +35,8 @@ export function GameRequestProvider({ children }: { children: ReactNode }) {
         const controller = new AbortController();
 
         setLoading(true);
-        fetch(`http://localhost:8080/api/game/session?mode=${mode}&amountOfQuestions=${amountOfQuestions}`, {
+        const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+        fetch(`${apiUrl}/api/game/session?mode=${mode}&amountOfQuestions=${amountOfQuestions}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -49,7 +50,7 @@ export function GameRequestProvider({ children }: { children: ReactNode }) {
                 setError(null);
             })
             .catch(err => {
-                if (err !== "AbortError") setError(`Failed to fetch session: ${err}`);
+                if (err?.name !== "AbortError") setError(`Failed to fetch session: ${err}`);
             })
             .finally(() => setLoading(false));
 

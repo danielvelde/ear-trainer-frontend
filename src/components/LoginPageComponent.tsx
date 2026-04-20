@@ -27,7 +27,7 @@ function LoginFormComponent() {
                 const data = await response.json(); // your backend's JSON response
                 console.log("Login success:", data);
                 alert("Login successful!");
-                localStorage.setItem("token", data.token);
+                localStorage.setItem("token", data.access_token);
 
                 // Optional: redirect to a dashboard or protected route
                 window.location.href = "/dashboard";
