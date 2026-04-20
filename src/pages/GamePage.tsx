@@ -5,3 +5,5 @@ function GamePage() {
         <GameComponent />
     )
 }
+
+export default GamePage;

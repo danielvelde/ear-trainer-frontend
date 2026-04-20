@@ -1,7 +1,9 @@
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function DashboardComponent() {
     const { logout } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <div>
@@ -13,7 +15,7 @@ function DashboardComponent() {
                 <h2>Welcome to your Dashboard</h2>
                 <p>Select an exercise to get started.</p>
                 <div>
-                    <button onClick={getSounds}> Play</button>
+                    <button onClick={() => navigate("/game")}>Play</button>
                 </div>
             </main>
         </div>

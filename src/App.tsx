@@ -5,6 +5,7 @@ import {LoginPage} from "./pages/LoginPage.tsx";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardPage from "./pages/DashboardPage.tsx";
+import GamePage from "./pages/GamePage.tsx";
 
 function App() {
     return (
@@ -16,6 +17,11 @@ function App() {
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
                         <DashboardPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/game" element={
+                    <ProtectedRoute>
+                        <GamePage />
                     </ProtectedRoute>
                 } />
             </Routes>
