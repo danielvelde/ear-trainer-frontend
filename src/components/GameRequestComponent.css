@@ -1,0 +1,114 @@
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 60px 24px;
+    flex-grow: 1;
+}
+
+.game-progress {
+    font-size: 14px;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.game-play-btn {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-border);
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 36px;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-play-btn:hover {
+    box-shadow: var(--shadow);
+    transform: scale(1.05);
+}
+
+.game-play-btn:active {
+    transform: scale(0.97);
+}
+
+.game-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+}
+
+.game-choice-btn {
+    padding: 18px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-h);
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.game-choice-btn:hover:not(:disabled) {
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow);
+}
+
+.game-choice-btn:disabled {
+    cursor: default;
+}
+
+.game-choice-btn.correct {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.game-choice-btn.wrong {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.game-next-btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-border);
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+.game-next-btn:hover {
+    box-shadow: var(--shadow);
+}
+
+.game-over {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 24px;
+}
+
+.game-over h2 {
+    font-size: 32px;
+}
+
+.game-over p {
+    font-size: 20px;
+    color: var(--text);
+}

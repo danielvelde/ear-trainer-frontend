@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useGameRequest } from "../context/GameRequestContext.tsx";
+import "./GameRequestComponent.css";
 
 const noteFiles = import.meta.glob<string>("../assets/notes/*.wav", { eager: true, query: "?url", import: "default" });
 
@@ -80,7 +81,7 @@ function GameRequestComponent() {
 
     if (done) {
         return (
-            <div>
+            <div className="game-over">
                 <h2>Game over</h2>
                 <p>Score: {score} / {session.sounds.length}</p>
             </div>
@@ -90,26 +91,26 @@ function GameRequestComponent() {
     const current = session.sounds[currentIndex];
 
     return (
-        <div>
-            <p>Question {currentIndex + 1} of {session.sounds.length}</p>
-            <button onClick={handlePlay}>Play</button>
-            <div>
+        <div className="game-wrapper">
+            <p className="game-progress">Question {currentIndex + 1} of {session.sounds.length}</p>
+            <button className="game-play-btn" onClick={handlePlay}>▶</button>
+            <div className="game-choices">
                 {options.map((opt) => {
                     const isCorrect = selected && opt === current.rootNote;
                     const isWrong = selected && opt === selected && opt !== current.rootNote;
                     return (
                         <button
                             key={opt}
+                            className={`game-choice-btn${isCorrect ? " correct" : isWrong ? " wrong" : ""}`}
                             onClick={() => handleSelect(opt)}
                             disabled={!!selected}
-                            style={isCorrect ? { color: "green" } : isWrong ? { color: "red" } : {}}
                         >
                             {opt}
                         </button>
                     );
                 })}
             </div>
-            {selected && <button onClick={handleNext}>Next</button>}
+            {selected && <button className="game-next-btn" onClick={handleNext}>Next →</button>}
         </div>
     );
 }
