@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth } from "./AuthContext.tsx";
 
 export interface Sound {
@@ -23,6 +24,9 @@ const GameRequestContext = createContext<GameRequestContextType | null>(null);
 
 export function GameRequestProvider({ children }: { children: ReactNode }) {
     const { token } = useAuth();
+    const [searchParams] = useSearchParams();
+    const mode = searchParams.get("mode") ?? "0";
+    const amountOfQuestions = searchParams.get("amountOfQuestions") ?? "5";
     const [session, setSession] = useState<GameSession | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -31,7 +35,7 @@ export function GameRequestProvider({ children }: { children: ReactNode }) {
         const controller = new AbortController();
 
         setLoading(true);
-        fetch("http://localhost:8080/api/game/session", {
+        fetch(`http://localhost:8080/api/game/session?mode=${mode}&amountOfQuestions=${amountOfQuestions}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -50,7 +54,7 @@ export function GameRequestProvider({ children }: { children: ReactNode }) {
             .finally(() => setLoading(false));
 
         return () => controller.abort();
-    }, [token]);
+    }, [token, mode, amountOfQuestions]);
 
     return (
         <GameRequestContext.Provider value={{ session, loading, error }}>
