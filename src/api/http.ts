@@ -1,4 +1,15 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+
+export async function getJson<TResponse>(path: string): Promise<TResponse> {
+    const res = await fetch(`${API_URL}${path}`, { credentials: "include" });
+
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Request failed");
+    }
+
+    return res.json() as Promise<TResponse>;
+}
 
 export async function postJson<TResponse, TBody>(
     path: string,
