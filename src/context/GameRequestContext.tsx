@@ -35,7 +35,7 @@ export function GameRequestProvider({ children }: { children: ReactNode }) {
         const controller = new AbortController();
 
         setLoading(true);
-        const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+        const apiUrl = import.meta.env.VITE_API_URL ?? "null";
         fetch(`${apiUrl}/api/game/session?mode=${mode}&amountOfQuestions=${amountOfQuestions}`, {
             method: "GET",
             headers: {
