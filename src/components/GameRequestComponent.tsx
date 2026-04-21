@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useGameRequest } from "../context/GameRequestContext.tsx";
 import { fetchSounds, fetchAudioBuffer } from "../api/audio.ts";
 import "../styles/GameRequestComponent.css";
@@ -19,6 +20,7 @@ function pickChoices(correct: string, allNotes: string[]): string[] {
 
 function GameRequestComponent() {
     const { session, loading, error } = useGameRequest();
+    const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selected, setSelected] = useState<string | null>(null);
     const [score, setScore] = useState(0);
@@ -108,10 +110,16 @@ function GameRequestComponent() {
     if (!session) return null;
 
     if (done) {
+        const total = session.sounds.length;
+        const pct = Math.round((score / total) * 100);
         return (
             <div className="game-over">
-                <h2>Game over</h2>
-                <p>Score: {score} / {session.sounds.length}</p>
+                <p className="game-over-label">Session complete</p>
+                <div className="game-over-score">{score}<span>/{total}</span></div>
+                <p className="game-over-pct">{pct}% correct</p>
+                <button className="game-next-btn" onClick={() => navigate("/dashboard")}>
+                    Play again
+                </button>
             </div>
         );
     }

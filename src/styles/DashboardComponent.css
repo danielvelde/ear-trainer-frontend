@@ -1,0 +1,115 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dashboard-heading {
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.dashboard-logout-btn {
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.dashboard-logout-btn:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.dashboard-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 60px 24px;
+    flex-grow: 1;
+}
+
+.dashboard-intro p {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text);
+    margin-top: 8px;
+}
+
+.dashboard-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 360px;
+}
+
+.dashboard-option {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.dashboard-option label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text);
+}
+
+.dashboard-option select {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-h);
+    font-size: 16px;
+    font-family: var(--sans);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dashboard-option select:focus {
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow);
+}
+
+.dashboard-play-btn {
+    padding: 14px 56px;
+    border-radius: 8px;
+    border: 1px solid var(--accent-border);
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.1s;
+}
+
+.dashboard-play-btn:hover {
+    box-shadow: var(--shadow);
+    transform: scale(1.02);
+}
+
+.dashboard-play-btn:active {
+    transform: scale(0.98);
+}
