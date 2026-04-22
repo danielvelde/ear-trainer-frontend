@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "../styles/DashboardComponent.css";
+import "./Dashboard.css";
 
-function DashboardComponent() {
+function Dashboard() {
     const { logout } = useAuth();
     const navigate = useNavigate();
     const [mode, setMode] = useState(0);
@@ -50,4 +50,4 @@ function DashboardComponent() {
     );
 }
 
-export default DashboardComponent;
+export default Dashboard;

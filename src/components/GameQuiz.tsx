@@ -1,65 +1,19 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameRequest } from "../context/GameRequestContext.tsx";
-import { fetchSounds, fetchAudioBuffer } from "../api/audio.ts";
-import "../styles/GameRequestComponent.css";
+import { useSoundMap } from "../hooks/useSoundMap.ts";
+import { pickChoices } from "../audio/soundMap.ts";
+import { playNote } from "../audio/player.ts";
+import "./GameQuiz.css";
 
-function pickChoices(correct: string, allNotes: string[]): string[] {
-    const distractors = allNotes.filter((n) => n !== correct);
-    for (let i = distractors.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [distractors[i], distractors[j]] = [distractors[j], distractors[i]];
-    }
-    const four = [correct, ...distractors.slice(0, 3)];
-    for (let i = four.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [four[i], four[j]] = [four[j], four[i]];
-    }
-    return four;
-}
-
-function GameRequestComponent() {
+function GameQuiz() {
     const { session, loading, error } = useGameRequest();
+    const { map: soundMap, noteOctaves, loading: soundsLoading, error: soundsError } = useSoundMap();
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selected, setSelected] = useState<string | null>(null);
     const [score, setScore] = useState(0);
     const [done, setDone] = useState(false);
-    const [soundMap, setSoundMap] = useState<Record<string, string>>({});
-    const [noteOctaves, setNoteOctaves] = useState<Record<string, number[]>>({});
-    const [soundsLoading, setSoundsLoading] = useState(true);
-    const [soundsError, setSoundsError] = useState<string | null>(null);
-
-    useEffect(() => {
-        fetchSounds()
-            .then((sounds) => {
-                if (sounds.length === 0) {
-                    setSoundsError("No sounds returned from API");
-                    return;
-                }
-                const map: Record<string, string> = {};
-                const octaves: Record<string, number[]> = {};
-                for (const s of sounds) {
-                    const key = s.name.replace(" - sine", "");
-                    map[key] = s.id;
-                    const match = key.match(/^([A-G]s?)(\d)$/);
-                    if (match) {
-                        const root = match[1];
-                        const oct = parseInt(match[2]);
-                        if (!octaves[root]) octaves[root] = [];
-                        octaves[root].push(oct);
-                    }
-                }
-                if (Object.keys(map).length === 0) {
-                    setSoundsError(`Sound names didn't match expected pattern. First name received: "${sounds[0].name}"`);
-                    return;
-                }
-                setSoundMap(map);
-                setNoteOctaves(octaves);
-            })
-            .catch((err) => setSoundsError(`Failed to fetch sounds: ${err}`))
-            .finally(() => setSoundsLoading(false));
-    }, []);
 
     const allNotes = useMemo(() => Object.keys(noteOctaves), [noteOctaves]);
 
@@ -76,13 +30,7 @@ function GameRequestComponent() {
         const octave = octaves[Math.floor(Math.random() * octaves.length)];
         const id = soundMap[`${rootNote}${octave}`];
         if (!id) return;
-        const ctx = new AudioContext();
-        const ab = await fetchAudioBuffer(id);
-        const buf = await ctx.decodeAudioData(ab);
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        src.connect(ctx.destination);
-        src.start();
+        await playNote(id);
     }, [session, currentIndex, soundMap, noteOctaves]);
 
     const handleSelect = useCallback(
@@ -151,4 +99,4 @@ function GameRequestComponent() {
     );
 }
 
-export default GameRequestComponent;
+export default GameQuiz;

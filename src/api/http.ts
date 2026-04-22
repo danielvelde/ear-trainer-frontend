@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
 
 export async function getJson<TResponse>(path: string): Promise<TResponse> {
     const res = await fetch(`${API_URL}${path}`, { credentials: "include" });

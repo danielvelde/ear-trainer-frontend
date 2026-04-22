@@ -1,39 +1,24 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.tsx";
-import "../styles/LoginPageComponent.css";
+import { register as registerRequest } from "../api/auth.ts";
+import "./Login.css";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
-
-function LoginFormComponent() {
+function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
-    const { login } = useAuth();
     const navigate = useNavigate();
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError(null);
 
         try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                login(data.access_token);
-                navigate("/dashboard", { replace: true });
-            } else {
-                const errorData = await response.json();
-                setError(errorData.message || "Login failed");
-            }
-        } catch {
-            setError("Could not connect to the server.");
+            await registerRequest({ email, password, defaultDifficulty: 0 });
+            navigate("/login", { replace: true });
+        } catch (err) {
+            setError(err instanceof Error && err.message ? err.message : "Registration failed");
         }
     }
 
@@ -60,10 +45,10 @@ function LoginFormComponent() {
                     />
                 </div>
                 {error && <p className="login-error">{error}</p>}
-                <button className="login-btn" type="submit">Sign in</button>
+                <button className="login-btn" type="submit">Sign up</button>
             </form>
         </div>
     );
 }
 
-export default LoginFormComponent;
+export default Signup;

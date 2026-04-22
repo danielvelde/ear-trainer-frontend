@@ -1,8 +1,8 @@
-import DashboardComponent from "../components/DashboardComponent.tsx";
+import Dashboard from "../components/Dashboard.tsx";
 
 function DashboardPage() {
     return (
-        <DashboardComponent />
+        <Dashboard />
     )
 }
 
