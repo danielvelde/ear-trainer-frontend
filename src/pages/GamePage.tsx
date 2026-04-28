@@ -1,8 +1,8 @@
-import GameComponent from "../components/GameComponent.tsx";
+import Game from "../components/Game.tsx";
 
 function GamePage() {
     return (
-        <GameComponent />
+        <Game />
     )
 }
 

@@ -1,18 +1,9 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "./AuthContext.tsx";
-
-export interface Sound {
-    rootNote: string;
-    chordType: string;
-}
-
-export interface GameSession {
-    id: number;
-    mode: number;
-    amountOfQuestions: number;
-    sounds: Sound[];
-}
+import { fetchGameSession } from "../api/game.ts";
+import type { GameSession } from "../api/game.ts";
 
 interface GameRequestContextType {
     session: GameSession | null;
@@ -35,21 +26,12 @@ export function GameRequestProvider({ children }: { children: ReactNode }) {
         const controller = new AbortController();
 
         setLoading(true);
-        const apiUrl = import.meta.env.VITE_API_URL ?? "null";
-        fetch(`${apiUrl}/api/game/session?mode=${mode}&amountOfQuestions=${amountOfQuestions}`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            signal: controller.signal,
-        })
-            .then(res => res.ok ? res.json() : Promise.reject(res.status))
-            .then((data: GameSession) => {
+        fetchGameSession(token, mode, amountOfQuestions, controller.signal)
+            .then((data) => {
                 setSession(data);
                 setError(null);
             })
-            .catch(err => {
+            .catch((err) => {
                 if (err?.name !== "AbortError") setError(`Failed to fetch session: ${err}`);
             })
             .finally(() => setLoading(false));

@@ -1,5 +1,3 @@
-
-import './App.css';
 import {SignupPage} from "./pages/SignupPage.tsx";
 import {LoginPage} from "./pages/LoginPage.tsx";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";

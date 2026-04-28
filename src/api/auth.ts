@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginPayload, RegisterPayload } from "../auth/auth";
+import type { AuthResponse, LoginPayload, RegisterPayload } from "./types.ts";
 import { postJson } from "./http.ts";
 
 export function login(payload: LoginPayload) {

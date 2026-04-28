@@ -113,3 +113,41 @@
 .dashboard-play-btn:active {
     transform: scale(0.98);
 }
+
+.dashboard-analytics-btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-h);
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dashboard-analytics-btn:hover:not(:disabled) {
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow);
+}
+
+.dashboard-analytics-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.dashboard-analytics-result {
+    max-width: 600px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-h);
+    font-size: 14px;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+.dashboard-analytics-error {
+    color: #ef4444;
+    font-size: 14px;
+}

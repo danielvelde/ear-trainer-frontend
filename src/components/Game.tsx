@@ -1,14 +1,14 @@
 import { GameRequestProvider } from "../context/GameRequestContext.tsx";
-import GameRequestComponent from "./GameRequestComponent.tsx";
+import GameQuiz from "./GameQuiz.tsx";
 
-function GameComponent() {
+function Game() {
     return (
         <div className="game">
             <GameRequestProvider>
-                <GameRequestComponent />
+                <GameQuiz />
             </GameRequestProvider>
         </div>
     );
 }
 
-export default GameComponent;
+export default Game;

@@ -1,8 +1,8 @@
-import SignupFormComponent from "../components/SignupFormComponent.tsx";
+import Signup from "../components/Signup.tsx";
 
 function SignupPage() {
     return (
-        <SignupFormComponent />
+        <Signup />
     )
 }
 
