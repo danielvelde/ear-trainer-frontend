@@ -1,13 +1,31 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { fetchAnalytics } from "../api/analyzer";
 import "./Dashboard.css";
 
 function Dashboard() {
-    const { logout } = useAuth();
+    const { token, logout } = useAuth();
     const navigate = useNavigate();
     const [mode, setMode] = useState(0);
     const [amountOfQuestions, setAmountOfQuestions] = useState(5);
+    const [analytics, setAnalytics] = useState<string | null>(null);
+    const [analyticsError, setAnalyticsError] = useState<string | null>(null);
+    const [loadingAnalytics, setLoadingAnalytics] = useState(false);
+
+    const handleGetAnalytics = async () => {
+        setLoadingAnalytics(true);
+        setAnalyticsError(null);
+        try {
+            const res = await fetchAnalytics(token);
+            setAnalytics(res.text);
+        } catch (err) {
+            setAnalyticsError(err instanceof Error ? err.message : "Request failed");
+            setAnalytics(null);
+        } finally {
+            setLoadingAnalytics(false);
+        }
+    };
 
     return (
         <div className="dashboard">
@@ -45,6 +63,19 @@ function Dashboard() {
                 >
                     Play
                 </button>
+                <button
+                    className="dashboard-analytics-btn"
+                    onClick={handleGetAnalytics}
+                    disabled={loadingAnalytics}
+                >
+                    {loadingAnalytics ? "Loading..." : "Get analytics"}
+                </button>
+                {analyticsError && (
+                    <div className="dashboard-analytics-error">{analyticsError}</div>
+                )}
+                {analytics !== null && (
+                    <div className="dashboard-analytics-result">{analytics}</div>
+                )}
             </main>
         </div>
     );
