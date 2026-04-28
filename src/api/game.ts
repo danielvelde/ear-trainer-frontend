@@ -32,3 +32,19 @@ export async function fetchGameSession(
     if (!res.ok) throw new Error(String(res.status));
     return res.json();
 }
+
+export async function submitSessionResult(
+    token: string | null,
+    sessionId: number,
+    correctAnswers: boolean[]
+): Promise<void> {
+    const res = await fetch(`${API_URL}/api/game/session`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: sessionId, correctAnswers }),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+}

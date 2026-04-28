@@ -1,18 +1,22 @@
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameRequest } from "../context/GameRequestContext.tsx";
+import { useAuth } from "../context/AuthContext.tsx";
 import { useSoundMap } from "../hooks/useSoundMap.ts";
 import { pickChoices } from "../audio/soundMap.ts";
 import { playNote } from "../audio/player.ts";
+import { submitSessionResult } from "../api/game.ts";
 import "./GameQuiz.css";
 
 function GameQuiz() {
     const { session, loading, error } = useGameRequest();
+    const { token } = useAuth();
     const { map: soundMap, noteOctaves, loading: soundsLoading, error: soundsError } = useSoundMap();
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selected, setSelected] = useState<string | null>(null);
     const [score, setScore] = useState(0);
+    const [correctAnswers, setCorrectAnswers] = useState<boolean[]>([]);
     const [done, setDone] = useState(false);
 
     const allNotes = useMemo(() => Object.keys(noteOctaves), [noteOctaves]);
@@ -36,21 +40,28 @@ function GameQuiz() {
     const handleSelect = useCallback(
         (choice: string) => {
             if (selected || !session) return;
+            const isCorrect = choice === session.sounds[currentIndex].rootNote;
             setSelected(choice);
-            if (choice === session.sounds[currentIndex].rootNote) setScore((s) => s + 1);
+            if (isCorrect) setScore((s) => s + 1);
+            setCorrectAnswers((prev) => [...prev, isCorrect]);
         },
         [selected, session, currentIndex]
     );
 
-    const handleNext = useCallback(() => {
+    const handleNext = useCallback(async () => {
         if (!session) return;
         if (currentIndex + 1 >= session.sounds.length) {
+            try {
+                await submitSessionResult(token, session.id, correctAnswers);
+            } catch (e) {
+                console.error("Failed to submit session result", e);
+            }
             setDone(true);
         } else {
             setCurrentIndex((i) => i + 1);
             setSelected(null);
         }
-    }, [currentIndex, session]);
+    }, [currentIndex, session, token, correctAnswers]);
 
     if (loading || soundsLoading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
