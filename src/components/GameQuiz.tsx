@@ -63,7 +63,7 @@ function GameQuiz() {
         }
     }, [currentIndex, session, token, correctAnswers]);
 
-    if (loading || soundsLoading) return <p>Loading...</p>;
+    if (loading || soundsLoading) return <p>Loading…</p>;
     if (error) return <p>{error}</p>;
     if (soundsError) return <p>{soundsError}</p>;
     if (!session) return null;
@@ -71,42 +71,71 @@ function GameQuiz() {
     if (done) {
         const total = session.sounds.length;
         const pct = Math.round((score / total) * 100);
+        const pctClass = pct >= 80 ? "good" : pct >= 50 ? "ok" : "poor";
         return (
             <div className="game-over">
                 <p className="game-over-label">Session complete</p>
-                <div className="game-over-score">{score}<span>/{total}</span></div>
-                <p className="game-over-pct">{pct}% correct</p>
-                <button className="game-next-btn" onClick={() => navigate("/dashboard")}>
-                    Play again
-                </button>
+                <div className="game-over-score">
+                    {score}<span>/{total}</span>
+                </div>
+                <p className={`game-over-pct ${pctClass}`}>{pct}% correct</p>
+                <div className="game-over-actions">
+                    <button className="game-over-btn-primary" onClick={() => navigate("/dashboard")}>
+                        Back to dashboard
+                    </button>
+                </div>
             </div>
         );
     }
 
     const current = session.sounds[currentIndex];
+    const total = session.sounds.length;
+    const progressPct = ((currentIndex) / total) * 100;
 
     return (
-        <div className="game-wrapper">
-            <p className="game-progress">Question {currentIndex + 1} of {session.sounds.length}</p>
-            <button className="game-play-btn" onClick={handlePlay}>▶</button>
-            <div className="game-choices">
-                {options.map((opt) => {
-                    const isCorrect = selected && opt === current.rootNote;
-                    const isWrong = selected && opt === selected && opt !== current.rootNote;
-                    return (
-                        <button
-                            key={opt}
-                            className={`game-choice-btn${isCorrect ? " correct" : isWrong ? " wrong" : ""}`}
-                            onClick={() => handleSelect(opt)}
-                            disabled={!!selected}
-                        >
-                            {opt}
-                        </button>
-                    );
-                })}
+        <>
+            <header className="game-header">
+                <div className="game-header-logo">
+                    <div className="game-header-icon">♪</div>
+                    <h1 className="game-header-title">Ear Trainer</h1>
+                </div>
+                <span className="game-header-progress">{currentIndex + 1} / {total}</span>
+            </header>
+
+            <div className="game-progress-bar-wrap">
+                <div className="game-progress-bar" style={{ width: `${progressPct}%` }} />
             </div>
-            {selected && <button className="game-next-btn" onClick={handleNext}>Next →</button>}
-        </div>
+
+            <div className="game-wrapper">
+                <div className="game-play-area">
+                    <button className="game-play-btn" onClick={handlePlay}>▶</button>
+                    <span className="game-play-hint">Play note</span>
+                </div>
+
+                <div className="game-choices">
+                    {options.map((opt) => {
+                        const isCorrect = selected && opt === current.rootNote;
+                        const isWrong = selected && opt === selected && opt !== current.rootNote;
+                        return (
+                            <button
+                                key={opt}
+                                className={`game-choice-btn${isCorrect ? " correct" : isWrong ? " wrong" : ""}`}
+                                onClick={() => handleSelect(opt)}
+                                disabled={!!selected}
+                            >
+                                {opt.replace("s", "#")}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {selected && (
+                    <button className="game-next-btn" onClick={handleNext}>
+                        {currentIndex + 1 >= total ? "Finish" : "Next →"}
+                    </button>
+                )}
+            </div>
+        </>
     );
 }
 
