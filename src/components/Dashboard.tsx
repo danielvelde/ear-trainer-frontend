@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { fetchAnalytics } from "../api/analyzer";
-import { fetchRecommendations } from "../api/recommendations";
+import { fetchRecommendations, formatNote } from "../api/recommendations";
 import ReactMarkdown from "react-markdown";
 import "./Dashboard.css";
 
@@ -148,7 +148,7 @@ function Dashboard() {
                     )}
                     {recommendationTrackId && recommendationNote && (
                         <p className="recommendation-note-text">
-                            You have difficulty with the note <strong>{recommendationNote}</strong>, so have a listen to this song. The root note of this song is <strong>{recommendationNote}</strong>.
+                            You have difficulty with the note <strong>{formatNote(recommendationNote)}</strong>, so have a listen to this song. The root note of this song is <strong>{formatNote(recommendationNote)}</strong>.
                         </p>
                     )}
                     {recommendationTrackId && (

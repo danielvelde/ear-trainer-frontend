@@ -7,6 +7,10 @@ export interface SongRecommendation {
     rootnote: string;
 }
 
+export function formatNote(note: string): string {
+    return note.endsWith("s") && note.length === 2 ? note[0] + "#" : note;
+}
+
 export async function fetchRecommendations(token: string | null): Promise<SongRecommendation[]> {
     const res = await fetch(`${API_URL}/api/recommendations/worst`, {
         method: "GET",
