@@ -1,24 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { fetchAnalytics } from "../api/analyzer";
 import { fetchRecommendations, formatNote } from "../api/recommendations";
+import { fetchSessionHistory, type SessionHistory } from "../api/stats";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import ReactMarkdown from "react-markdown";
 import "./Dashboard.css";
 
 function Dashboard() {
     const { token, logout } = useAuth();
     const navigate = useNavigate();
-    const [mode, setMode] = useState(0);
     const [amountOfQuestions, setAmountOfQuestions] = useState(5);
     const [modalOpen, setModalOpen] = useState(false);
     const [analytics, setAnalytics] = useState<string | null>(null);
     const [analyticsError, setAnalyticsError] = useState<string | null>(null);
     const [loadingAnalytics, setLoadingAnalytics] = useState(false);
+    const [history, setHistory] = useState<SessionHistory[]>([]);
+    const [historyError, setHistoryError] = useState<string | null>(null);
     const [recommendationTrackId, setRecommendationTrackId] = useState<string | null>(null);
     const [recommendationNote, setRecommendationNote] = useState<string | null>(null);
     const [recommendationsError, setRecommendationsError] = useState<string | null>(null);
     const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
+    useEffect(() => {
+        fetchSessionHistory(token)
+            .then(setHistory)
+            .catch(err => setHistoryError(err instanceof Error ? err.message : "Failed to load history"));
+    }, [token]);
 
     const handleGetAnalytics = async () => {
         setModalOpen(true);
@@ -73,45 +82,50 @@ function Dashboard() {
                 <div className="dashboard-card">
                     <div>
                         <p className="dashboard-card-title">New session</p>
-                        <p className="dashboard-card-subtitle">Pick a mode and number of questions.</p>
+                        <p className="dashboard-card-subtitle">How many questions do you want?</p>
                     </div>
-                    <div className="dashboard-options">
-                        <div className="dashboard-option">
-                            <label htmlFor="mode-select">Game mode</label>
-                            <div className="dashboard-select-wrap">
-                                <select
-                                    id="mode-select"
-                                    onChange={e => setMode(Number(e.target.value))}
-                                    value={mode}
-                                >
-                                    <option value={0}>Single notes</option>
-                                    <option value={1}>Major and minor chords</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="dashboard-option">
-                            <label htmlFor="questions-select">Questions</label>
-                            <div className="dashboard-select-wrap">
-                                <select
-                                    id="questions-select"
-                                    onChange={e => setAmountOfQuestions(Number(e.target.value))}
-                                    value={amountOfQuestions}
-                                >
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={15}>15</option>
-                                    <option value={20}>20</option>
-                                    <option value={25}>25</option>
-                                </select>
-                            </div>
+                    <div className="dashboard-option">
+                        <label htmlFor="questions-select">Questions</label>
+                        <div className="dashboard-select-wrap">
+                            <select
+                                id="questions-select"
+                                onChange={e => setAmountOfQuestions(Number(e.target.value))}
+                                value={amountOfQuestions}
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={15}>15</option>
+                                <option value={20}>20</option>
+                                <option value={25}>25</option>
+                            </select>
                         </div>
                     </div>
                     <button
                         className="dashboard-play-btn"
-                        onClick={() => navigate(`/game?mode=${mode}&amountOfQuestions=${amountOfQuestions}`)}
+                        onClick={() => navigate(`/game?mode=0&amountOfQuestions=${amountOfQuestions}`)}
                     >
                         Start session
                     </button>
+                </div>
+
+                <div className="dashboard-analytics-card">
+                    <p className="dashboard-analytics-title">Progress</p>
+                    <p className="dashboard-analytics-subtitle">Accuracy over your last sessions.</p>
+                    {historyError && <p className="dashboard-analytics-error">{historyError}</p>}
+                    {!historyError && history.length === 0 && (
+                        <p className="dashboard-analytics-subtitle">Play a session to see your progress here.</p>
+                    )}
+                    {history.length > 0 && (
+                        <ResponsiveContainer width="100%" height={180}>
+                            <LineChart data={history} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                                <XAxis dataKey="createdAt" hide />
+                                <YAxis domain={[0, 100]} tickFormatter={v => `${v}%`} tick={{ fontSize: 11 }} />
+                                <Tooltip formatter={(v: number) => [`${v}%`, "Accuracy"]} labelFormatter={() => ""} />
+                                <Line type="monotone" dataKey="accuracy" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    )}
                 </div>
 
                 <div className="dashboard-analytics-card">
